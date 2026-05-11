@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #0a0a0b;
+    color: #e8eaed;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track { background: #111214; }
+  ::-webkit-scrollbar-thumb { background: #3a3d42; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #f5c518; }
+}
+
+@layer components {
+  .shop-header {
+    font-family: 'Oswald', 'Impact', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .shop-mono {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+  }
+
+  .caution-border {
+    background: repeating-linear-gradient(
+      45deg,
+      #f5c518 0px,
+      #f5c518 8px,
+      #0a0a0b 8px,
+      #0a0a0b 16px
+    );
+    height: 4px;
+  }
+
+  .panel-glass {
+    background: rgba(31, 33, 36, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(42, 45, 50, 0.8);
+  }
+
+  .fluor-glow {
+    box-shadow: 0 0 20px 2px rgba(212, 232, 255, 0.12),
+                0 0 60px 4px rgba(212, 232, 255, 0.04);
+  }
+
+  .tab-active {
+    background: #1f2124;
+    border-bottom: 2px solid #f5c518;
+    color: #f5c518;
+  }
+
+  .tab-inactive {
+    background: transparent;
+    border-bottom: 2px solid transparent;
+    color: #8a8f98;
+  }
+
+  .tab-inactive:hover {
+    color: #d4e8ff;
+    background: rgba(255,255,255,0.04);
+  }
+
+  .part-card {
+    background: #1a1c1f;
+    border: 1px solid #2a2d32;
+    transition: border-color 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+
+  .part-card:hover {
+    border-color: #f5c518;
+    background: #1f2124;
+  }
+
+  .part-card-selected {
+    border-color: #f5c518;
+    background: #252820;
+    box-shadow: 0 0 10px rgba(245, 197, 24, 0.2);
+  }
+
+  .car-stall {
+    flex-shrink: 0;
+    width: 160px;
+    background: #1a1c1f;
+    border: 1px solid #2a2d32;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .car-stall:hover {
+    border-color: #f5c518;
+    transform: translateY(-2px);
+  }
+
+  .car-stall-active {
+    border-color: #f5c518;
+    background: #252820;
+    box-shadow: 0 0 16px rgba(245, 197, 24, 0.3);
+    transform: translateY(-3px);
+  }
+
+  .btn-primary {
+    @apply bg-shop-yellow text-shop-black font-semibold px-4 py-2 text-sm uppercase tracking-wide;
+    font-family: 'Oswald', sans-serif;
+    transition: background 0.1s, box-shadow 0.1s;
+  }
+  .btn-primary:hover {
+    background: #ffd60a;
+    box-shadow: 0 0 12px rgba(245,197,24,0.4);
+  }
+
+  .btn-ghost {
+    @apply border border-shop-border text-shop-dim px-4 py-2 text-sm uppercase tracking-wide;
+    font-family: 'Oswald', sans-serif;
+    transition: color 0.1s, border-color 0.1s;
+  }
+  .btn-ghost:hover {
+    color: #e8eaed;
+    border-color: #8a8f98;
+  }
+}
+
+/* Fluorescent flicker animation */
+@keyframes flicker {
+  0%, 96%, 100% { opacity: 1; }
+  97% { opacity: 0.85; }
+  98% { opacity: 1; }
+  99% { opacity: 0.9; }
+}
+
+.fluor-flicker {
+  animation: flicker 8s infinite;
+}
+
+/* Loading shimmer */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #1a1c1f 25%, #2a2d32 50%, #1a1c1f 75%);
+  background-size: 400px 100%;
+  animation: shimmer 1.5s infinite;
+}
