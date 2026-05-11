@@ -1,5 +1,5 @@
-import { Suspense, useEffect, useRef } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Suspense, useEffect } from 'react'
+import { Canvas, useThree } from '@react-three/fiber'
 import { OrbitControls, Environment, ContactShadows, Preload } from '@react-three/drei'
 import * as THREE from 'three'
 import ShopEnvironment from './ShopEnvironment'
@@ -30,6 +30,19 @@ function LoadingFallback() {
   )
 }
 
+// Wires gl.domElement.toDataURL() into the Zustand store
+function ScreenshotCapture() {
+  const { gl } = useThree()
+  const setCaptureScreenshot = useGarageStore(s => s.setCaptureScreenshot)
+
+  useEffect(() => {
+    setCaptureScreenshot(() => gl.domElement.toDataURL('image/jpeg', 0.82))
+    return () => setCaptureScreenshot(null)
+  }, [gl, setCaptureScreenshot])
+
+  return null
+}
+
 export default function CarViewer() {
   const { selectedCar } = useGarageStore()
 
@@ -44,6 +57,7 @@ export default function CarViewer() {
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.1,
           outputColorSpace: THREE.SRGBColorSpace,
+          preserveDrawingBuffer: true,
         }}
       >
         <color attach="background" args={['#0a0a0b']} />
@@ -67,6 +81,7 @@ export default function CarViewer() {
           <Preload all />
         </Suspense>
 
+        <ScreenshotCapture />
         <CameraRig />
       </Canvas>
 
@@ -82,14 +97,9 @@ export default function CarViewer() {
         </div>
       )}
 
-      {/* Loading indicator */}
       {!selectedCar && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="text-center">
-            <div className="shop-header text-shop-yellow text-xl animate-pulse">
-              LOADING...
-            </div>
-          </div>
+          <div className="shop-header text-shop-yellow text-xl animate-pulse">LOADING...</div>
         </div>
       )}
     </div>

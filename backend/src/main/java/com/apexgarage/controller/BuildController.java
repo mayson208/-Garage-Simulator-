@@ -42,6 +42,13 @@ public class BuildController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/{id}/duplicate")
+    public ResponseEntity<Build> duplicateBuild(@PathVariable Long id) {
+        return buildService.duplicateBuild(id)
+                .map(b -> ResponseEntity.status(HttpStatus.CREATED).body(b))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBuild(@PathVariable Long id) {
         return buildService.deleteBuild(id)

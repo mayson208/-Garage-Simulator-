@@ -26,6 +26,11 @@
   ::-webkit-scrollbar-track { background: #111214; }
   ::-webkit-scrollbar-thumb { background: #3a3d42; border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: #f5c518; }
+
+  /* Wrench cursor on interactive elements */
+  button, [role="button"], input[type="range"], input[type="color"], label[for] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath fill='%23f5c518' d='M16 1c-2.8 0-5 2.2-5 5 0 .5.1 1 .2 1.4L2.3 16.3A3 3 0 0 0 2 17.7 3 3 0 0 0 5 20.7a3 3 0 0 0 2.1-.8l8.9-8.9c.4.1.9.2 1.4.2 2.8 0 5-2.2 5-5 0-.5-.1-1-.2-1.4l-3.3 3.3-2.1-2.1 3.3-3.3C19.6 2.6 17.9 1 16 1z'/%3E%3C/svg%3E") 4 20, pointer;
+  }
 }
 
 @layer components {
@@ -83,7 +88,6 @@
     background: #1a1c1f;
     border: 1px solid #2a2d32;
     transition: border-color 0.15s, background 0.15s;
-    cursor: pointer;
   }
 
   .part-card:hover {
@@ -97,25 +101,26 @@
     box-shadow: 0 0 10px rgba(245, 197, 24, 0.2);
   }
 
+  /* Hydraulic lift hover on car stall cards */
   .car-stall {
     flex-shrink: 0;
     width: 160px;
     background: #1a1c1f;
     border: 1px solid #2a2d32;
-    cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   .car-stall:hover {
     border-color: #f5c518;
-    transform: translateY(-2px);
+    transform: translateY(-6px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 12px rgba(245, 197, 24, 0.15);
   }
 
   .car-stall-active {
     border-color: #f5c518;
     background: #252820;
     box-shadow: 0 0 16px rgba(245, 197, 24, 0.3);
-    transform: translateY(-3px);
+    transform: translateY(-4px);
   }
 
   .btn-primary {
@@ -137,18 +142,36 @@
     color: #e8eaed;
     border-color: #8a8f98;
   }
+
+  /* Filter chip */
+  .filter-chip {
+    @apply px-2 py-0.5 text-xs border border-shop-border text-shop-dim rounded-sm shop-mono;
+    transition: color 0.1s, border-color 0.1s, background 0.1s;
+    white-space: nowrap;
+  }
+  .filter-chip:hover {
+    border-color: #8a8f98;
+    color: #e8eaed;
+  }
+  .filter-chip-active {
+    border-color: #f5c518;
+    color: #f5c518;
+    background: rgba(245, 197, 24, 0.08);
+  }
 }
 
 /* Fluorescent flicker animation */
 @keyframes flicker {
-  0%, 96%, 100% { opacity: 1; }
-  97% { opacity: 0.85; }
+  0%, 94%, 100% { opacity: 1; }
+  95% { opacity: 0.7; }
+  96% { opacity: 1; }
+  97% { opacity: 0.82; }
   98% { opacity: 1; }
-  99% { opacity: 0.9; }
+  99% { opacity: 0.88; }
 }
 
 .fluor-flicker {
-  animation: flicker 8s infinite;
+  animation: flicker 10s infinite;
 }
 
 /* Loading shimmer */
@@ -160,4 +183,10 @@
   background: linear-gradient(90deg, #1a1c1f 25%, #2a2d32 50%, #1a1c1f 75%);
   background-size: 400px 100%;
   animation: shimmer 1.5s infinite;
+}
+
+/* Progress bar glow pulse */
+@keyframes progress-pulse {
+  0%, 100% { box-shadow: 0 0 6px rgba(245, 197, 24, 0.4); }
+  50%       { box-shadow: 0 0 14px rgba(245, 197, 24, 0.8); }
 }

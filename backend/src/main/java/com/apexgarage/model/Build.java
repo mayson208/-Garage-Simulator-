@@ -26,13 +26,17 @@ public class Build {
     @Column(name = "car_model_key", nullable = false)
     private String carModelKey;
 
-    // JSON blob: {"bodyKit": 1, "wheels": 3, "suspension": null, ...}
     @Column(name = "parts_config", columnDefinition = "TEXT")
     private String partsConfig;
 
-    // JSON blob: {"type": "solid", "color": "#FF0000", "wrap": null}
     @Column(name = "paint_config", columnDefinition = "TEXT")
     private String paintConfig;
+
+    @Column(name = "stance_config", columnDefinition = "TEXT")
+    private String stanceConfig;
+
+    @Column(name = "wheel_size")
+    private Integer wheelSize;
 
     @Column(name = "thumbnail_data_url", columnDefinition = "TEXT")
     private String thumbnailDataUrl;

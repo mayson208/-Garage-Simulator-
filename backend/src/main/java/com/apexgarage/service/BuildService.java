@@ -32,8 +32,24 @@ public class BuildService {
             existing.setCarModelKey(updated.getCarModelKey());
             existing.setPartsConfig(updated.getPartsConfig());
             existing.setPaintConfig(updated.getPaintConfig());
+            existing.setStanceConfig(updated.getStanceConfig());
+            existing.setWheelSize(updated.getWheelSize());
             existing.setThumbnailDataUrl(updated.getThumbnailDataUrl());
             return buildRepository.save(existing);
+        });
+    }
+
+    public Optional<Build> duplicateBuild(Long id) {
+        return buildRepository.findById(id).map(original -> {
+            Build copy = new Build();
+            copy.setName("Copy of " + original.getName());
+            copy.setCarModelKey(original.getCarModelKey());
+            copy.setPartsConfig(original.getPartsConfig());
+            copy.setPaintConfig(original.getPaintConfig());
+            copy.setStanceConfig(original.getStanceConfig());
+            copy.setWheelSize(original.getWheelSize());
+            copy.setThumbnailDataUrl(original.getThumbnailDataUrl());
+            return buildRepository.save(copy);
         });
     }
 
