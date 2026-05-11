@@ -47,4 +47,11 @@ public class Part {
 
     @Column(length = 1024)
     private String description;
+
+    // Performance part modifiers — null for non-performance parts
+    @Column(name = "hp_modifier")
+    private Double hpModifier;
+
+    @Column(name = "tq_modifier")
+    private Double tqModifier;
 }

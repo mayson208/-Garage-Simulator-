@@ -41,6 +41,16 @@ public class Build {
     @Column(name = "thumbnail_data_url", columnDefinition = "TEXT")
     private String thumbnailDataUrl;
 
+    // Share system
+    @Column(name = "share_token", unique = true, length = 12)
+    private String shareToken;
+
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = false;
+
+    @Column(name = "clone_count", nullable = false)
+    private Integer cloneCount = 0;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useGarageStore } from '../../store/useGarageStore'
+import { useNotificationStore } from '../../store/useNotificationStore'
 import { buildsApi } from '../../api/builds'
 import type { Build } from '../../types'
 
@@ -42,18 +43,27 @@ interface BuildCardProps {
   onDelete: (id: number) => void
   onDuplicate: (id: number) => void
   onRename: (id: number, name: string) => void
+  onToggleVisibility: (id: number) => void
 }
 
-function BuildCard({ build, onLoad, onDelete, onDuplicate, onRename }: BuildCardProps) {
+function BuildCard({ build, onLoad, onDelete, onDuplicate, onRename, onToggleVisibility }: BuildCardProps) {
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState(build.name)
   const [confirming, setConfirming] = useState(false)
+  const push = useNotificationStore(s => s.push)
 
   const commitRename = () => {
     if (editName.trim() && editName.trim() !== build.name) {
       onRename(build.id, editName.trim())
     }
     setEditing(false)
+  }
+
+  const copyShareLink = () => {
+    if (!build.shareToken) return
+    const url = `${window.location.origin}/share/${build.shareToken}`
+    navigator.clipboard.writeText(url)
+    push('Share link copied!', 'success')
   }
 
   const formatDate = (iso: string) =>
@@ -118,12 +128,41 @@ function BuildCard({ build, onLoad, onDelete, onDuplicate, onRename }: BuildCard
       <div className="shop-mono text-shop-dim text-xs mt-0.5">
         {build.carModelKey.replace(/_/g, ' ').toUpperCase()}
       </div>
-      <div className="shop-mono text-shop-dim text-xs opacity-50 mt-0.5">
-        {formatDate(build.updatedAt)}
+      <div className="flex items-center justify-between mt-0.5">
+        <div className="shop-mono text-shop-dim text-xs opacity-50">{formatDate(build.updatedAt)}</div>
+        {build.isPublic && build.shareToken && (
+          <div className="shop-mono text-shop-green text-xs opacity-70">PUBLIC</div>
+        )}
       </div>
 
+      {/* Share row */}
+      {build.shareToken && (
+        <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-shop-border/30">
+          <button
+            onClick={() => onToggleVisibility(build.id)}
+            className={`flex-1 text-xs py-1 shop-mono border transition-colors ${
+              build.isPublic
+                ? 'border-shop-green/50 text-shop-green hover:bg-shop-green/10'
+                : 'border-shop-border text-shop-dim hover:border-shop-gun'
+            }`}
+            title={build.isPublic ? 'Make private' : 'Make public'}
+          >
+            {build.isPublic ? '🌐 PUBLIC' : '🔒 PRIVATE'}
+          </button>
+          {build.isPublic && (
+            <button
+              onClick={copyShareLink}
+              className="px-2 py-1 border border-shop-border text-shop-dim text-xs shop-mono hover:border-shop-yellow hover:text-shop-yellow transition-colors"
+              title="Copy share link"
+            >
+              COPY
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Actions */}
-      <div className="flex gap-1.5 mt-3">
+      <div className="flex gap-1.5 mt-2">
         <button
           onClick={() => onLoad(build)}
           className="flex-1 btn-primary text-xs py-1.5"
@@ -243,6 +282,11 @@ export default function GaragePanel() {
     setBuilds(prev => prev.map(b => b.id === id ? updated : b))
   }
 
+  const handleToggleVisibility = async (id: number) => {
+    const updated = await buildsApi.toggleVisibility(id)
+    setBuilds(prev => prev.map(b => b.id === id ? updated : b))
+  }
+
   if (!garagePanelOpen) return null
 
   return (
@@ -325,6 +369,7 @@ export default function GaragePanel() {
                   onDelete={handleDelete}
                   onDuplicate={handleDuplicate}
                   onRename={handleRename}
+                  onToggleVisibility={handleToggleVisibility}
                 />
               ))}
             </div>

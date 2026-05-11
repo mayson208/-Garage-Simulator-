@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import ShopEnvironment from './ShopEnvironment'
 import CarModel from './CarModel'
 import { useGarageStore } from '../../store/useGarageStore'
+import { useDebugOverlay, DebugPanel, DebugCanvasLayer } from '../UI/DebugOverlay'
 
 function CameraRig() {
   return (
@@ -45,6 +46,7 @@ function ScreenshotCapture() {
 
 export default function CarViewer() {
   const { selectedCar } = useGarageStore()
+  const { visible: debugVisible, fps, setFps } = useDebugOverlay()
 
   return (
     <div className="w-full h-full relative">
@@ -82,8 +84,11 @@ export default function CarViewer() {
         </Suspense>
 
         <ScreenshotCapture />
+        <DebugCanvasLayer fps={fps} visible={debugVisible} onFps={setFps} />
         <CameraRig />
       </Canvas>
+
+      <DebugPanel fps={fps} visible={debugVisible} />
 
       {/* Car name overlay */}
       {selectedCar && (

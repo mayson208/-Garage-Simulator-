@@ -35,10 +35,27 @@ public class Car {
     private String glbPath;
 
     // Named attachment nodes for 3D part placement
-    // e.g. "wheel_fl,wheel_fr,wheel_rl,wheel_rr,bumper_front,bumper_rear,wing_rear,exhaust_tip"
     @Column(name = "attachment_nodes", length = 512)
     private String attachmentNodes;
 
     @Column(length = 1024)
     private String description;
+
+    // Car culture group: JDM, Euro, Muscle
+    @Column(length = 16)
+    private String culture;
+
+    // Baseline dyno stats (stock)
+    @Column(name = "base_hp")
+    private Integer baseHp;
+
+    @Column(name = "base_tq")
+    private Integer baseTq;
+
+    @Column(name = "weight_kg")
+    private Integer weightKg;
+
+    // Approximate redline RPM for dyno curve generation
+    @Column(name = "redline_rpm")
+    private Integer redlineRpm;
 }

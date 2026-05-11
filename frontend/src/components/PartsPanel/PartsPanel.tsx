@@ -9,17 +9,19 @@ import {
 import PartCard from './PartCard'
 import PaintTab from './PaintTab'
 import StanceTab from './StanceTab'
+import DynoTab from './DynoTab'
 
 const CATEGORY_ICONS: Record<PartCategory, string> = {
-  body_kits:  '🔧',
-  wheels:     '⚙',
-  suspension: '📐',
-  exhaust:    '💨',
-  spoilers:   '🏁',
-  paint:      '🎨',
-  lights:     '💡',
-  engine_bay: '🔩',
-  stance:     '📏',
+  body_kits:   '🔧',
+  wheels:      '⚙',
+  suspension:  '📐',
+  exhaust:     '💨',
+  spoilers:    '🏁',
+  paint:       '🎨',
+  lights:      '💡',
+  engine_bay:  '🔩',
+  stance:      '📏',
+  performance: '⚡',
 }
 
 function uniqueBrands(parts: Part[]): string[] {
@@ -78,8 +80,9 @@ export default function PartsPanel() {
   }
 
   const hasActiveFilter = search || brandFilter || priceFilter !== 'all'
-  const isPaint  = activePartCategory === 'paint'
-  const isStance = activePartCategory === 'stance'
+  const isPaint       = activePartCategory === 'paint'
+  const isStance      = activePartCategory === 'stance'
+  const isPerformance = activePartCategory === 'performance'
 
   return (
     <div
@@ -140,8 +143,8 @@ export default function PartsPanel() {
             </div>
           </div>
 
-          {/* Search bar — hidden for paint/stance tabs */}
-          {!isPaint && !isStance && (
+          {/* Search bar — hidden for paint/stance/performance tabs */}
+          {!isPaint && !isStance && !isPerformance && (
             <div className="flex-shrink-0 px-2 pt-2 pb-1 border-b border-shop-border">
               <div className="relative">
                 <svg
@@ -229,6 +232,8 @@ export default function PartsPanel() {
               <PaintTab />
             ) : isStance ? (
               <StanceTab />
+            ) : isPerformance ? (
+              <DynoTab />
             ) : partsLoading ? (
               <div className="p-3 space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => (

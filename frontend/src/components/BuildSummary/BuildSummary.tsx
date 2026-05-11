@@ -2,15 +2,16 @@ import { useGarageStore } from '../../store/useGarageStore'
 import { PART_CATEGORY_LABELS, type PartCategory } from '../../types'
 
 const CATEGORY_ICONS: Record<PartCategory, string> = {
-  body_kits:  '🔧',
-  wheels:     '⚙',
-  suspension: '📐',
-  exhaust:    '💨',
-  spoilers:   '🏁',
-  paint:      '🎨',
-  lights:     '💡',
-  engine_bay: '🔩',
-  stance:     '📏',
+  body_kits:   '🔧',
+  wheels:      '⚙',
+  suspension:  '📐',
+  exhaust:     '💨',
+  spoilers:    '🏁',
+  paint:       '🎨',
+  lights:      '💡',
+  engine_bay:  '🔩',
+  stance:      '📏',
+  performance: '⚡',
 }
 
 function exportBuildSheet(

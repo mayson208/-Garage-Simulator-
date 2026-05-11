@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { useGarageStore } from '../../store/useGarageStore'
 
 export default function ShopHeader() {
@@ -49,6 +50,13 @@ export default function ShopHeader() {
 
       {/* Right: actions */}
       <div className="flex items-center gap-2">
+        <Link
+          to="/gallery"
+          className="hidden sm:flex items-center gap-1 px-3 py-1.5 border border-shop-border text-shop-dim shop-mono text-xs hover:border-shop-yellow hover:text-shop-yellow transition-colors"
+        >
+          <span>⬡</span>
+          <span>GALLERY</span>
+        </Link>
         {totalParts > 0 && (
           <button
             onClick={resetBuild}

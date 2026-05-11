@@ -1,3 +1,5 @@
+export type CarCulture = 'JDM' | 'Euro' | 'Muscle'
+
 export interface Car {
   id: number
   make: string
@@ -8,6 +10,11 @@ export interface Car {
   glbPath: string | null
   attachmentNodes: string | null
   description: string | null
+  culture: CarCulture | null
+  baseHp: number | null
+  baseTq: number | null
+  weightKg: number | null
+  redlineRpm: number | null
 }
 
 export type PartCategory =
@@ -20,6 +27,7 @@ export type PartCategory =
   | 'lights'
   | 'engine_bay'
   | 'stance'
+  | 'performance'
 
 export interface Part {
   id: number
@@ -33,6 +41,8 @@ export interface Part {
   glbPath: string | null
   attachmentNode: string | null
   description: string | null
+  hpModifier: number | null
+  tqModifier: number | null
 }
 
 export type FinishType = 'gloss' | 'matte' | 'satin' | 'chrome'
@@ -64,6 +74,7 @@ export interface PartsConfig {
   lights?: number | null
   engine_bay?: number | null
   stance?: number | null
+  performance?: number | null
 }
 
 export interface Build {
@@ -75,6 +86,9 @@ export interface Build {
   stanceConfig: string | null
   wheelSize: number | null
   thumbnailDataUrl: string | null
+  shareToken: string | null
+  isPublic: boolean
+  cloneCount: number
   createdAt: string
   updatedAt: string
 }
@@ -90,20 +104,21 @@ export interface BuildPayload {
 }
 
 export const PART_CATEGORY_LABELS: Record<PartCategory, string> = {
-  body_kits:  'Body Kits',
-  wheels:     'Wheels & Tires',
-  suspension: 'Suspension',
-  exhaust:    'Exhaust',
-  spoilers:   'Wings & Spoilers',
-  paint:      'Liveries & Paint',
-  lights:     'Lights & Tint',
-  engine_bay: 'Engine Bay',
-  stance:     'Stance',
+  body_kits:   'Body Kits',
+  wheels:      'Wheels & Tires',
+  suspension:  'Suspension',
+  exhaust:     'Exhaust',
+  spoilers:    'Wings & Spoilers',
+  paint:       'Liveries & Paint',
+  lights:      'Lights & Tint',
+  engine_bay:  'Engine Bay',
+  stance:      'Stance',
+  performance: 'Performance',
 }
 
 export const PART_CATEGORIES: PartCategory[] = [
   'body_kits', 'wheels', 'suspension', 'exhaust',
-  'spoilers', 'paint', 'lights', 'engine_bay', 'stance',
+  'spoilers', 'paint', 'lights', 'engine_bay', 'stance', 'performance',
 ]
 
 export const FINISH_PRESETS: Record<FinishType, Pick<PaintConfig, 'metalness' | 'roughness'>> = {

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import { useGarageStore } from './store/useGarageStore'
 import ShopHeader from './components/UI/ShopHeader'
 import CarViewer from './components/Viewer3D/CarViewer'
@@ -7,6 +8,9 @@ import PartsPanel from './components/PartsPanel/PartsPanel'
 import GaragePanel from './components/GaragePanel/GaragePanel'
 import BuildSummary from './components/BuildSummary/BuildSummary'
 import LoadingScreen from './components/UI/LoadingScreen'
+import ToastStack from './components/UI/ToastStack'
+import SharePage from './pages/SharePage'
+import GalleryPage from './pages/GalleryPage'
 
 // ── Web Audio shop ambience ──────────────────────────────────────────────────
 
@@ -19,7 +23,6 @@ function useShopAudio() {
     const ctx = new AudioContext()
     ctxRef.current = ctx
 
-    // Air compressor hum — low rumble oscillator
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
     const filter = ctx.createBiquadFilter()
@@ -35,7 +38,6 @@ function useShopAudio() {
     gain.connect(ctx.destination)
     osc.start()
 
-    // White noise layer (distant shop atmosphere)
     const bufSize = ctx.sampleRate * 2
     const noiseBuffer = ctx.createBuffer(1, bufSize, ctx.sampleRate)
     const data = noiseBuffer.getChannelData(0)
@@ -74,57 +76,42 @@ function useShopAudio() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function App() {
+function Workshop() {
   const { loadCars } = useGarageStore()
   const [loadingDone, setLoadingDone] = useState(false)
   const [soundOn, setSoundOn] = useState(false)
   const { start: startAudio, stop: stopAudio } = useShopAudio()
 
-  useEffect(() => {
-    loadCars()
-  }, [loadCars])
+  useEffect(() => { loadCars() }, [loadCars])
 
   const toggleSound = () => {
-    if (soundOn) {
-      stopAudio()
-      setSoundOn(false)
-    } else {
-      startAudio()
-      setSoundOn(true)
-    }
+    if (soundOn) { stopAudio(); setSoundOn(false) }
+    else { startAudio(); setSoundOn(true) }
   }
 
   return (
     <>
       {!loadingDone && <LoadingScreen onDone={() => setLoadingDone(true)} />}
-
       <div className={`flex flex-col w-full h-full bg-shop-black overflow-hidden transition-opacity duration-500 ${loadingDone ? 'opacity-100' : 'opacity-0'}`}>
-        {/* Top bar */}
         <ShopHeader />
-
-        {/* Main workspace */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Parts panel — left */}
-          <PartsPanel />
+        {/* Main workspace — horizontal on md+, vertical stack on mobile */}
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          {/* Parts panel — left on md+, bottom drawer on mobile (hidden by default on sm) */}
+          <div className="hidden md:flex">
+            <PartsPanel />
+          </div>
 
           {/* 3D Viewport — center */}
-          <div className="flex flex-col flex-1 overflow-hidden">
-            {/* Fluorescent strip top of viewport */}
+          <div className="flex flex-col flex-1 overflow-hidden min-h-0">
             <div className="flex-shrink-0 h-1 w-full bg-gradient-to-r from-transparent via-shop-fluor/20 to-transparent fluor-flicker" />
-
-            {/* Canvas */}
-            <div className="flex-1 relative">
+            <div className="flex-1 relative min-h-0">
               <CarViewer />
-
-              {/* Corner shop signage */}
-              <div className="absolute top-3 right-3 pointer-events-none">
+              <div className="absolute top-3 right-3 pointer-events-none hidden sm:flex">
                 <div className="flex flex-col items-end gap-1">
                   <div className="shop-mono text-shop-dim text-xs opacity-30 tracking-widest">EST. 2024</div>
                   <div className="shop-mono text-shop-dim text-xs opacity-20">ORBIT · ZOOM · PAN</div>
                 </div>
               </div>
-
-              {/* Ambient sound toggle */}
               <div className="absolute top-3 left-3">
                 <button
                   onClick={toggleSound}
@@ -136,27 +123,37 @@ export default function App() {
                   title={soundOn ? 'Mute shop sounds' : 'Enable shop ambience'}
                 >
                   <span>{soundOn ? '🔊' : '🔇'}</span>
-                  <span>SHOP {soundOn ? 'ON' : 'OFF'}</span>
+                  <span className="hidden sm:inline">SHOP {soundOn ? 'ON' : 'OFF'}</span>
                 </button>
               </div>
-
-              {/* Bottom caution stripe overlay */}
               <div className="absolute bottom-0 left-0 right-0 h-2 caution-border opacity-20 pointer-events-none" />
             </div>
-
-            {/* Car selector — bottom strip */}
-            <div className="flex-shrink-0" style={{ height: '140px' }}>
+            {/* Car selector — visible on all screens, taller on mobile */}
+            <div className="flex-shrink-0 h-[100px] sm:h-[140px]">
               <CarSelector />
             </div>
           </div>
 
-          {/* Build summary — right */}
-          <BuildSummary />
+          {/* Build summary — right on md+, hidden on mobile */}
+          <div className="hidden md:flex">
+            <BuildSummary />
+          </div>
         </div>
-
-        {/* Garage modal overlay */}
         <GaragePanel />
       </div>
+    </>
+  )
+}
+
+export default function App() {
+  return (
+    <>
+      <Routes>
+        <Route path="/" element={<Workshop />} />
+        <Route path="/share/:token" element={<SharePage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
+      </Routes>
+      <ToastStack />
     </>
   )
 }

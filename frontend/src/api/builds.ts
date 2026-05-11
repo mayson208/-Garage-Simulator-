@@ -1,6 +1,12 @@
 import apiClient from './apiClient'
 import type { Build, BuildPayload } from '../types'
 
+export interface GalleryResponse {
+  builds: Build[]
+  page: number
+  limit: number
+}
+
 export const buildsApi = {
   getAll: () =>
     apiClient.get<Build[]>('/builds').then(r => r.data),
@@ -19,4 +25,16 @@ export const buildsApi = {
 
   delete: (id: number) =>
     apiClient.delete(`/builds/${id}`),
+
+  getByShareToken: (token: string) =>
+    apiClient.get<Build>(`/builds/share/${token}`).then(r => r.data),
+
+  toggleVisibility: (id: number) =>
+    apiClient.put<Build>(`/builds/${id}/visibility`).then(r => r.data),
+
+  cloneFromShare: (token: string) =>
+    apiClient.post<Build>(`/builds/share/${token}/clone`).then(r => r.data),
+
+  getGallery: (params: { page?: number; limit?: number; sort?: string; carModel?: string } = {}) =>
+    apiClient.get<GalleryResponse>('/builds/gallery', { params }).then(r => r.data),
 }
